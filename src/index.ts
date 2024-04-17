@@ -7,6 +7,8 @@ import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { createClient } from "@libsql/client";
 import { bookmarks } from './db/schema';
+import { logger } from 'hono/logger';
+import { cache } from 'hono/cache';
 
 type Env = {
   TURSO_DATABASE_URL: string
@@ -28,6 +30,12 @@ function initDB(env: Env) {
 const app = new Hono<{ Bindings: Env }>()
 
 app.use(cors())
+app.use(logger())
+
+app.get("*", cache({
+  cacheName: "marks-me",
+  cacheControl: "max-age=21600" // 6 hours
+}))
 
 app.get('/', async (c) => {
   const envs = env(c)
