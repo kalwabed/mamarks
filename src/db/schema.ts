@@ -12,3 +12,6 @@ export const bookmarks = sqliteTable("bookmarks", {
 }, bookmark => ({
   titleIdx: uniqueIndex("title_idx").on(bookmark.title)
 }))
+
+export type SelectBookmark = typeof bookmarks.$inferInsert
+export type InsertBookmark = typeof bookmarks.$inferInsert

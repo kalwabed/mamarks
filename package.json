@@ -1,7 +1,9 @@
 {
   "scripts": {
     "dev": "wrangler dev src/index.ts",
-    "deploy": "wrangler deploy --minify src/index.ts"
+    "deploy": "wrangler deploy --minify src/index.ts",
+    "generate": "drizzle-kit generate:sqlite",
+    "migrate": "bun run src/db/migrate.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.6.0",
@@ -10,6 +12,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240403.0",
+    "dotenv": "^16.4.5",
     "drizzle-kit": "^0.20.14",
     "wrangler": "^3.47.0"
   }
