@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { env, getRuntimeKey } from "hono/adapter";
+import { env } from "hono/adapter";
 import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
 import { bookmarks } from './db/schema';
@@ -24,8 +24,7 @@ app.get('/', async (c) => {
   const db = initDB(envs)
   try {
     const allBookmarks = await db.select().from(bookmarks).all()
-    console.log(allBookmarks)
-    return c.text(getRuntimeKey())
+    return c.json({ data: allBookmarks })
   } catch (error) {
     console.error(error)
     return c.text("error")
@@ -33,16 +32,19 @@ app.get('/', async (c) => {
 })
 
 app.post("/", async c => {
+  const body = await c.req.json()
+  const { title, summary, url } = body
   const envs = env(c)
   const db = initDB(envs)
 
-  await db.insert(bookmarks).values({
+  const result = await db.insert(bookmarks).values({
     id: crypto.randomUUID(),
-    title: "apakah real",
-    summary: "ya",
-    url: "https://ya",
-  })
-  return c.text("ok")
+    title,
+    summary,
+    url,
+  }).returning()
+
+  return c.json({ data: result })
 })
 
 export default app
