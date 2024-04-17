@@ -1,6 +1,10 @@
 import { Hono } from 'hono'
 import { env } from "hono/adapter";
+import { zValidator } from "@hono/zod-validator"
+import { z } from "zod";
 import { drizzle } from "drizzle-orm/libsql";
+import { cors } from 'hono/cors';
+import { HTTPException } from 'hono/http-exception';
 import { createClient } from "@libsql/client";
 import { bookmarks } from './db/schema';
 
@@ -10,6 +14,10 @@ type Env = {
 }
 
 function initDB(env: Env) {
+  if (!env.TURSO_AUTH_TOKEN || !env.TURSO_DATABASE_URL) {
+    throw new HTTPException(500, { message: "TURSO_AUTH_TOKEN & TURSO_DATABASE_URL is required!" })
+  }
+
   const client = createClient({
     url: env.TURSO_DATABASE_URL,
     authToken: env.TURSO_AUTH_TOKEN
@@ -18,6 +26,8 @@ function initDB(env: Env) {
 }
 
 const app = new Hono<{ Bindings: Env }>()
+
+app.use(cors())
 
 app.get('/', async (c) => {
   const envs = env(c)
@@ -31,20 +41,29 @@ app.get('/', async (c) => {
   }
 })
 
-app.post("/", async c => {
-  const body = await c.req.json()
-  const { title, summary, url } = body
-  const envs = env(c)
-  const db = initDB(envs)
+app.post("/",
+  zValidator('json',
+    z.object({
+      title: z.string(),
+      summary: z.string(),
+      url: z.string().url(),
+      tags: z.string().array().optional()
+    })
+  ),
+  async c => {
+    const body = await c.req.json()
+    const { title, summary, url } = body
+    const envs = env(c)
+    const db = initDB(envs)
 
-  const result = await db.insert(bookmarks).values({
-    id: crypto.randomUUID(),
-    title,
-    summary,
-    url,
-  }).returning()
+    const result = await db.insert(bookmarks).values({
+      id: crypto.randomUUID(),
+      title,
+      summary,
+      url,
+    }).returning()
 
-  return c.json({ data: result })
-})
+    return c.json({ data: result })
+  })
 
 export default app
