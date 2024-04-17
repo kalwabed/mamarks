@@ -4,3 +4,4 @@ compatibility_date = "2023-12-01"
 [vars]
 TURSO_DATABASE_URL = ""
 TURSO_AUTH_TOKEN = ""
+ACCESS_TOKEN = ""

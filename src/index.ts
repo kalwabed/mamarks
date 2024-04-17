@@ -6,13 +6,15 @@ import { drizzle } from "drizzle-orm/libsql";
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { createClient } from "@libsql/client";
-import { bookmarks } from './db/schema';
 import { logger } from 'hono/logger';
 import { cache } from 'hono/cache';
+import { bookmarks } from './db/schema';
+import { checkToken } from './helpers/auth';
 
 type Env = {
   TURSO_DATABASE_URL: string
   TURSO_AUTH_TOKEN: string
+  ACCESS_TOKEN: string
 }
 
 function initDB(env: Env) {
@@ -32,9 +34,16 @@ const app = new Hono<{ Bindings: Env }>()
 app.use(cors())
 app.use(logger())
 
+app.use(async (c, next) => {
+  const token = c.req.header("X-Token")
+  const envs = env(c)
+  checkToken(token, envs.ACCESS_TOKEN)
+  await next()
+})
+
 app.get("*", cache({
   cacheName: "marks-me",
-  cacheControl: "max-age=21600" // 6 hours
+  cacheControl: "max-age=3600" // 1 hour
 }))
 
 app.get('/', async (c) => {
@@ -44,8 +53,7 @@ app.get('/', async (c) => {
     const allBookmarks = await db.select().from(bookmarks).all()
     return c.json({ data: allBookmarks })
   } catch (error) {
-    console.error(error)
-    return c.text("error")
+    throw new HTTPException(500, { cause: error })
   }
 })
 
