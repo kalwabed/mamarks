@@ -10,7 +10,7 @@ Simple service to communicate between services to my public personal [bookmarks]
 
 ## How it works
 
-The idea is that I can save my personal bookmarks in a simple way through a Telegram bot and consume them on [my web page](https://www.kalwabed.com/bookmarks).
+The idea is that I can consume them on [my web page](https://www.kalwabed.com/bookmarks).
 
 ## Usage
 ### Install
@@ -18,7 +18,7 @@ The idea is that I can save my personal bookmarks in a simple way through a Tele
 pnpm install
 ```
 
-#### Make sure you already have the required environment files: `wrangler.toml` and `.env`
+***Make sure you already have the required environment files: `wrangler.toml` and `.env`**
 ```sh
 # you can just copy the examples.
 cp .env.example .env
