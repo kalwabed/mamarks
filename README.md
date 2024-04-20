@@ -18,7 +18,7 @@ The idea is that I can consume them on [my web page](https://www.kalwabed.com/bo
 pnpm install
 ```
 
-***Make sure you already have the required environment files: `wrangler.toml` and `.env`**
+**Make sure you already have the required environment files: `wrangler.toml` and `.env`**
 ```sh
 # you can just copy the examples.
 cp .env.example .env
