@@ -1,6 +1,6 @@
 # Mamarks
 
-Simple service to communicate between services to my public personal [bookmarks](https://www.kalwabed.com/bookmarks). Still **WIP**.
+Simple service to communicate between services to my public personal [bookmarks](https://www.kalwabed.com/bookmarks).
 
 ## Tech
 - Hono
