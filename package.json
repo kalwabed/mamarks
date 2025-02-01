@@ -6,16 +6,16 @@
     "migrate": "bun run src/db/migrate.ts"
   },
   "dependencies": {
-    "@hono/zod-validator": "^0.2.1",
-    "@libsql/client": "^0.6.0",
-    "drizzle-orm": "^0.30.8",
+    "@hono/zod-validator": "^0.4.2",
+    "@libsql/client": "^0.14.0",
+    "drizzle-orm": "^0.39.1",
     "hono": "^4.2.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240403.0",
     "dotenv": "^16.4.5",
-    "drizzle-kit": "^0.20.14",
+    "drizzle-kit": "^0.30.4",
     "wrangler": "^3.47.0"
   }
 }
